@@ -140,15 +140,11 @@ namespace FlappyBird
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
+            BirdRenderer.Draw(e.Graphics, new Rectangle(BirdX, (int)bird.Y, BirdSize, BirdSize), bird.GetDrawColor());
 
             foreach (Pipe p in pipes)
             {
                 p.Draw(e.Graphics, this.ClientSize.Height);
-            }
-
-            using (Brush birdBrush = new SolidBrush(bird.GetDrawColor()))
-            {
-                e.Graphics.FillEllipse(birdBrush, BirdX, bird.Y, BirdSize, BirdSize);
             }
 
             using (Font scoreFont = new Font("Arial", 16, FontStyle.Bold))
