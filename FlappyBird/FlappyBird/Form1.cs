@@ -16,6 +16,7 @@ namespace FlappyBird
 
         private Bird bird;
         private Pipe[] pipes;
+        private float cloudOffset = 0f;
         private System.Windows.Forms.Timer gameTimer;
         private Random random = new Random();
         private bool isGameOver = false;
@@ -23,6 +24,10 @@ namespace FlappyBird
         public Form1()
         {
             InitializeComponent();
+            this.DoubleBuffered = true;
+            this.SetStyle(ControlStyles.AllPaintingInWmPaint |
+                          ControlStyles.OptimizedDoubleBuffer |
+                          ControlStyles.UserPaint, true);
 
             bird = new Bird(this.ClientSize.Height / 2f);
 
@@ -75,7 +80,7 @@ namespace FlappyBird
         private void GameTimer_Tick(object sender, EventArgs e)
         {
             if (isGameOver) return;
-
+            cloudOffset += 0.5f;
             bird.Update();
 
             for (int i = 0; i < pipes.Length; i++)
@@ -140,6 +145,7 @@ namespace FlappyBird
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
+            Background.Draw(e.Graphics, this.ClientSize.Width, this.ClientSize.Height, cloudOffset);
             BirdRenderer.Draw(e.Graphics, new Rectangle(BirdX, (int)bird.Y, BirdSize, BirdSize), bird.GetDrawColor());
 
             foreach (Pipe p in pipes)
