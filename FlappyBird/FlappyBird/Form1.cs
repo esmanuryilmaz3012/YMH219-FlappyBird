@@ -12,6 +12,7 @@ namespace FlappyBird
         private const int PipeGap = 150;
         private const int PipeSpacing = 250;
         private const float PipeSpeed = 3f;
+        private int score = 0;
 
         private Bird bird;
         private Pipe[] pipes;
@@ -56,6 +57,13 @@ namespace FlappyBird
                 {
                     Pipe other = pipes[(i + 1) % pipes.Length];
                     pipes[i].Reset(other.X + PipeSpacing, RandomGapY());
+                }
+
+                // Kuşun sol kenarı borunun sağ kenarını geçtiyse ve bu boru henüz sayılmadıysa
+                if (!pipes[i].Passed && BirdX > pipes[i].X + pipes[i].Width)
+                {
+                    pipes[i].Passed = true;
+                    score++;
                 }
             }
 
@@ -115,6 +123,11 @@ namespace FlappyBird
                         (this.ClientSize.Width - size.Width) / 2,
                         (this.ClientSize.Height - size.Height) / 2);
                 }
+            }
+
+            using (Font scoreFont = new Font("Arial", 16, FontStyle.Bold))
+            {
+                e.Graphics.DrawString("Skor: " + score, scoreFont, Brushes.Black, 10, 10);
             }
         }
     }

@@ -13,6 +13,8 @@ namespace FlappyBird
         public int GapY { get; private set; }   // Boşluğun üst kenarı
         public int GapHeight { get; }           // Boşluğun yüksekliği
 
+        public bool Passed { get; set; } = false; // "Oyuncu bu boruyu geçti mi?" diye kontrol etmek için
+
         public Pipe(float x, int width, int gapY, int gapHeight)
         {
             X = x;
@@ -32,6 +34,7 @@ namespace FlappyBird
         {
             X = newX;
             GapY = newGapY;
+            Passed = false;   // Yeni boru henüz geçilmedi
         }
 
         public bool CollidesWith(Rectangle bird, int formHeight)
