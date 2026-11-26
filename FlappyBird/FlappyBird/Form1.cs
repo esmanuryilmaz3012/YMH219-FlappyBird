@@ -8,6 +8,8 @@ namespace FlappyBird
     {
         private Bird bird;
         private System.Windows.Forms.Timer gameTimer;
+        private bool isGameOver = false;
+        private const int BirdSize = 30;
 
         public Form1()
         {
@@ -23,7 +25,16 @@ namespace FlappyBird
 
         private void GameTimer_Tick(object sender, EventArgs e)
         {
+            if (isGameOver) return;
+
             bird.Update();
+
+            if (bird.Y < 0 || bird.Y + BirdSize >= this.ClientSize.Height)
+            {
+                isGameOver = true;
+                gameTimer.Stop();
+            }
+
             this.Invalidate();
         }
 
@@ -39,6 +50,19 @@ namespace FlappyBird
         {
             base.OnPaint(e);
             e.Graphics.FillEllipse(Brushes.Yellow, 100, bird.Y, 30, 30);
+            if (isGameOver)
+            {
+                using (Font font = new Font("Arial", 24, FontStyle.Bold))
+                {
+                    string text = "GAME OVER";
+                    SizeF size = e.Graphics.MeasureString(text, font);
+                    e.Graphics.DrawString(text, font, Brushes.Red,
+                        (this.ClientSize.Width - size.Width) / 2,
+                        (this.ClientSize.Height - size.Height) / 2);
+                }
+            }
         }
+
+
     }
 }
