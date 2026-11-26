@@ -17,8 +17,15 @@ namespace FlappyBird
                 g.FillEllipse(bodyBrush, x, y, w, h);
             }
 
-            // Kanat (gövdenin alt-orta kısmında, koyu bir ton)
-            using (Brush wingBrush = new SolidBrush(ControlPaint.Dark(color)))
+            System.Drawing.Color wingColor = Brightness(color) > 128
+     ? System.Drawing.Color.FromArgb(
+         (int)(color.R * 0.7), (int)(color.G * 0.7), (int)(color.B * 0.7))   // açık gövde: kanat koyu
+     : System.Drawing.Color.FromArgb(
+         Math.Min(255, (int)(color.R + (255 - color.R) * 0.5)),
+         Math.Min(255, (int)(color.G + (255 - color.G) * 0.5)),
+         Math.Min(255, (int)(color.B + (255 - color.B) * 0.5)));  // koyu gövde: kanat açık
+
+            using (Brush wingBrush = new SolidBrush(wingColor))
             {
                 g.FillEllipse(wingBrush, x + w / 6, y + h / 2, w / 2, h / 4);
             }
@@ -38,6 +45,10 @@ namespace FlappyBird
                 new Point(x + w - 2, y + h / 2 + 7)
             };
             g.FillPolygon(Brushes.Orange, beak);
+        }
+        private static double Brightness(Color c)
+        {
+            return 0.299 * c.R + 0.587 * c.G + 0.114 * c.B;
         }
     }
 }
