@@ -44,12 +44,20 @@ namespace FlappyBird
             {
                 bird.Jump();
             }
+            else if (e.KeyCode == Keys.C)
+            {
+                bird.NextColor();
+                this.Invalidate();
+            }
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            e.Graphics.FillEllipse(Brushes.Yellow, 100, bird.Y, 30, 30);
+            using (Brush birdBrush = new SolidBrush(bird.GetDrawColor()))
+            {
+                e.Graphics.FillEllipse(birdBrush, 100, bird.Y, BirdSize, BirdSize);
+            }
             if (isGameOver)
             {
                 using (Font font = new Font("Arial", 24, FontStyle.Bold))
