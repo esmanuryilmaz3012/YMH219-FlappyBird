@@ -6,10 +6,18 @@ namespace FlappyBird
 {
     public partial class Form1 : Form
     {
-        private Bird bird;
-        private System.Windows.Forms.Timer gameTimer;
-        private bool isGameOver = false;
+        private const int BirdX = 100;
         private const int BirdSize = 30;
+        private const int PipeWidth = 60;
+        private const int PipeGap = 150;
+        private const int PipeSpacing = 250;
+        private const float PipeSpeed = 3f;
+
+        private Bird bird;
+        private Pipe[] pipes;
+        private System.Windows.Forms.Timer gameTimer;
+        private Random random = new Random();
+        private bool isGameOver = false;
 
         public Form1()
         {
@@ -17,10 +25,21 @@ namespace FlappyBird
 
             bird = new Bird(this.ClientSize.Height / 2f);
 
+            pipes = new Pipe[2];
+            for (int i = 0; i < pipes.Length; i++)
+            {
+                pipes[i] = new Pipe(this.ClientSize.Width + i * PipeSpacing, PipeWidth, RandomGapY(), PipeGap);
+            }
+
             gameTimer = new System.Windows.Forms.Timer();
             gameTimer.Interval = 20;
             gameTimer.Tick += GameTimer_Tick;
             gameTimer.Start();
+        }
+
+        private int RandomGapY()
+        {
+            return random.Next(80, this.ClientSize.Height - PipeGap - 80);
         }
 
         private void GameTimer_Tick(object sender, EventArgs e)
@@ -29,7 +48,28 @@ namespace FlappyBird
 
             bird.Update();
 
-            if (bird.Y < 0 || bird.Y + BirdSize >= this.ClientSize.Height)
+            for (int i = 0; i < pipes.Length; i++)
+            {
+                pipes[i].Move(PipeSpeed);
+
+                if (pipes[i].IsOffScreen)
+                {
+                    Pipe other = pipes[(i + 1) % pipes.Length];
+                    pipes[i].Reset(other.X + PipeSpacing, RandomGapY());
+                }
+            }
+
+            Rectangle birdRect = new Rectangle(BirdX, (int)bird.Y, BirdSize, BirdSize);
+            bool hitPipe = false;
+            foreach (Pipe p in pipes)
+            {
+                if (p.CollidesWith(birdRect, this.ClientSize.Height))
+                {
+                    hitPipe = true;
+                }
+            }
+
+            if (bird.Y < 0 || bird.Y + BirdSize >= this.ClientSize.Height || hitPipe)
             {
                 isGameOver = true;
                 gameTimer.Stop();
@@ -54,10 +94,17 @@ namespace FlappyBird
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
+
+            foreach (Pipe p in pipes)
+            {
+                p.Draw(e.Graphics, this.ClientSize.Height);
+            }
+
             using (Brush birdBrush = new SolidBrush(bird.GetDrawColor()))
             {
-                e.Graphics.FillEllipse(birdBrush, 100, bird.Y, BirdSize, BirdSize);
+                e.Graphics.FillEllipse(birdBrush, BirdX, bird.Y, BirdSize, BirdSize);
             }
+
             if (isGameOver)
             {
                 using (Font font = new Font("Arial", 24, FontStyle.Bold))
@@ -70,7 +117,5 @@ namespace FlappyBird
                 }
             }
         }
-
-
     }
 }
