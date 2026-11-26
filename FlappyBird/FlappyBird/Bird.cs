@@ -43,7 +43,11 @@
             Velocity += Gravity;
             Y += Velocity;
         }
-
+        public void Reset(float startY)
+        {
+            Y = startY;
+            Velocity = 0;
+        }
         public BirdColor CurrentColor { get; private set; } = BirdColor.Yellow;
 
         public void NextColor()

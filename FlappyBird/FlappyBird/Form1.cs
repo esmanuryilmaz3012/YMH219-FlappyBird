@@ -26,7 +26,7 @@ namespace FlappyBird
 
             bird = new Bird(this.ClientSize.Height / 2f);
 
-            pipes = new Pipe[2];
+            pipes = new Pipe[4];
             for (int i = 0; i < pipes.Length; i++)
             {
                 pipes[i] = new Pipe(this.ClientSize.Width + i * PipeSpacing, PipeWidth, RandomGapY(), PipeGap);
@@ -36,13 +36,42 @@ namespace FlappyBird
             gameTimer.Interval = 20;
             gameTimer.Tick += GameTimer_Tick;
             gameTimer.Start();
-        }
 
+        }
+        private float GetRightmostPipeX()
+        {
+            float rightmost = pipes[0].X;
+            for (int i = 1; i < pipes.Length; i++)
+            {
+                if (pipes[i].X > rightmost)
+                {
+                    rightmost = pipes[i].X;
+                }
+            }
+            return rightmost;
+        }
+        private void ResetGame()
+            {
+            bird.Reset(this.ClientSize.Height / 2f);
+
+            score = 0;
+
+            for (int i = 0; i < pipes.Length; i++)
+            {
+                float startX = this.ClientSize.Width + i * PipeSpacing;
+                pipes[i].Reset(startX, RandomGapY());
+            }
+
+            isGameOver = false;
+            gameTimer.Start();
+            this.Invalidate();
+            }
+      
         private int RandomGapY()
         {
             return random.Next(80, this.ClientSize.Height - PipeGap - 80);
         }
-
+        
         private void GameTimer_Tick(object sender, EventArgs e)
         {
             if (isGameOver) return;
@@ -55,10 +84,8 @@ namespace FlappyBird
 
                 if (pipes[i].IsOffScreen)
                 {
-                    Pipe other = pipes[(i + 1) % pipes.Length];
-                    pipes[i].Reset(other.X + PipeSpacing, RandomGapY());
+                    pipes[i].Reset(GetRightmostPipeX() + PipeSpacing, RandomGapY());
                 }
-
                 // Kuşun sol kenarı borunun sağ kenarını geçtiyse ve bu boru henüz sayılmadıysa
                 if (!pipes[i].Passed && BirdX > pipes[i].X + pipes[i].Width)
                 {
@@ -85,12 +112,23 @@ namespace FlappyBird
 
             this.Invalidate();
         }
-
+      
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Space)
             {
-                bird.Jump();
+                if (isGameOver)
+                {
+                    ResetGame();
+                }
+                else
+                {
+                    bird.Jump();
+                }
+            }
+            else if (e.KeyCode == Keys.R && isGameOver)
+            {
+                ResetGame();
             }
             else if (e.KeyCode == Keys.C)
             {
@@ -113,21 +151,32 @@ namespace FlappyBird
                 e.Graphics.FillEllipse(birdBrush, BirdX, bird.Y, BirdSize, BirdSize);
             }
 
-            if (isGameOver)
-            {
-                using (Font font = new Font("Arial", 24, FontStyle.Bold))
-                {
-                    string text = "GAME OVER";
-                    SizeF size = e.Graphics.MeasureString(text, font);
-                    e.Graphics.DrawString(text, font, Brushes.Red,
-                        (this.ClientSize.Width - size.Width) / 2,
-                        (this.ClientSize.Height - size.Height) / 2);
-                }
-            }
-
             using (Font scoreFont = new Font("Arial", 16, FontStyle.Bold))
             {
                 e.Graphics.DrawString("Skor: " + score, scoreFont, Brushes.Black, 10, 10);
+            }
+
+            if (isGameOver)
+            {
+                using (Font font = new Font("Arial", 24, FontStyle.Bold))
+                using (Font hintFont = new Font("Arial", 12, FontStyle.Regular))
+                {
+                    string text = "KAYBETTİNİZ";
+                    string hint = "Yeniden kaybetmek için Space veya R tuşuna basınız";
+
+                    SizeF size = e.Graphics.MeasureString(text, font);
+                    SizeF hintSize = e.Graphics.MeasureString(hint, hintFont);
+
+                    float centerY = this.ClientSize.Height / 2f;
+
+                    e.Graphics.DrawString(text, font, Brushes.Crimson,
+                        (this.ClientSize.Width - size.Width) / 2,
+                        centerY - size.Height);
+
+                    e.Graphics.DrawString(hint, hintFont, Brushes.Black,
+                        (this.ClientSize.Width - hintSize.Width) / 2,
+                        centerY + 5);
+                }
             }
         }
     }
