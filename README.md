@@ -75,3 +75,7 @@ FlappyBird/
 - Gündüz ve gece arka planı saate göre seçiliyor, güneş ve ay sabit konumda.
 - Bulutlar yalnızca gündüz görünümünde hareket ediyor.
 - Kuş ve borular sabit (kodlanmış) piksel değerleriyle çiziliyor, pencere boyutu değişince orantılı ölçeklenmiyor.
+
+
+Öğrencinin Adı Soyadı: Esmanur Yılmaz
+Öğrenci NO: 250541033
