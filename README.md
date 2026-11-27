@@ -76,6 +76,5 @@ FlappyBird/
 - Bulutlar yalnızca gündüz görünümünde hareket ediyor.
 - Kuş ve borular sabit (kodlanmış) piksel değerleriyle çiziliyor, pencere boyutu değişince orantılı ölçeklenmiyor.
 
-
-Öğrencinin Adı Soyadı: Esmanur Yılmaz
-Öğrenci NO: 250541033
+-----
+**Öğrenci:** Esmanur Yılmaz - 250541033
