@@ -44,7 +44,7 @@ Nesne Tabanlı Programlama (YMH219) dersi için geliştirilen, C# ve Windows For
 
 1. Depoyu klonla:
    ```bash
-   git clone https://github.com/[KULLANICI_ADIN]/YMH219-FlappyBird.git
+   git clone https://github.com/esmanuryilmaz3012/YMH219-FlappyBird.git
    ```
 2. `YMH219-FlappyBird/FlappyBird/FlappyBird.sln` dosyasını Visual Studio ile aç.
 3. Üstteki yapılandırmayı **Release** seç.
